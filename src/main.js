@@ -24,6 +24,7 @@ import { useEventBus } from '@/utils/event-bus'
 import { registerServiceWorker, checkForUpdates, listenToNetworkChanges } from '@/utils/service-worker'
 
 // Service Worker Kaydı ve PWA Özellikleri
+/*
 window.addEventListener('load', async () => {
   try {
     // Service Worker'ı kaydet
@@ -51,6 +52,7 @@ window.addEventListener('load', async () => {
     console.error('Service Worker başlatılırken hata:', error);
   }
 });
+*/
 
 // Oluştur ve ayarla
 const app = createApp(App)

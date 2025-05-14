@@ -1,5 +1,5 @@
 @use "@/styles/base/variables" as vars;
-@use "@/styles/base/reset";
+// @use "@/styles/base/reset"; // GEÇİCİ OLARAK DEVRE DIŞI BIRAKILDI - Dosya bulunamadı hatası
 @use "@/styles/base/base";
 @use "@/styles/layout/layout";
 @use "@/styles/layout/sidebar"; // Sidebar stillerini dahil et

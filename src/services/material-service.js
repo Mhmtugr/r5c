@@ -1,12 +1,16 @@
 // Material servis modülü
-import { 
+import * as firebaseServiceLogging from './firebase-service.js';
+
+console.log('[material-service.js] Imported from firebase-service.js:', firebaseServiceLogging);
+
+const { 
   // Firebase helpers
   addDocument, 
   updateDocument, 
   getDocument, 
-  queryDocuments,
+  // queryDocuments, // Test için destructuring'den kaldırıldı
   deleteDocument
-} from './firebase-service';
+} = firebaseServiceLogging;
 
 /**
  * Malzemeleri belirli filtrelere göre getir
@@ -47,7 +51,12 @@ const getMaterials = async (filters = {}) => {
     // Limit
     const limitCount = filters.limit || null;
     
-    return await queryDocuments('materials', queryFilters, sortOptions, limitCount);
+    console.log('[material-service.js] getMaterials -> firebaseServiceLogging.queryDocuments:', firebaseServiceLogging.queryDocuments); // queryDocuments'ı kontrol et
+    if (typeof firebaseServiceLogging.queryDocuments !== 'function') {
+      console.error('[material-service.js] HATA: firebaseServiceLogging.queryDocuments bir fonksiyon değil!', firebaseServiceLogging);
+      throw new TypeError('firebaseServiceLogging.queryDocuments is not a function');
+    }
+    return await firebaseServiceLogging.queryDocuments('materials', queryFilters, sortOptions, limitCount);
   } catch (error) {
     console.error("Malzemeleri getirme hatası:", error);
     throw error;
@@ -145,7 +154,7 @@ const addOrderMaterials = async (orderId, materials) => {
  */
 const getInStockMaterials = async (limit = null) => {
   try {
-    return await queryDocuments(
+    return await firebaseServiceLogging.queryDocuments(
       'materials', 
       { inStock: true }, 
       { field: 'name', direction: 'asc' },
@@ -201,7 +210,7 @@ const addStockMovement = async (movementData) => {
  */
 const getMaterialsForOrder = async (orderId) => {
   try {
-    return await queryDocuments(
+    return await firebaseServiceLogging.queryDocuments(
       'materials',
       { orderId },
       { field: 'name', direction: 'asc' }
@@ -219,7 +228,7 @@ const getMaterialsForOrder = async (orderId) => {
 const getCriticalMaterials = async () => {
   try {
     // Stok durumunu kontrol et ve kritik olanları filtrele
-    const allMaterials = await queryDocuments('materials');
+    const allMaterials = await firebaseServiceLogging.queryDocuments('materials');
     
     return allMaterials.filter(material => {
       return material.minLevel && material.quantity && material.quantity <= material.minLevel;
@@ -236,8 +245,8 @@ const getCriticalMaterials = async () => {
  */
 const getStockSummary = async () => {
   try {
-    const allMaterials = await queryDocuments('materials');
-    const stockMovements = await queryDocuments(
+    const allMaterials = await firebaseServiceLogging.queryDocuments('materials');
+    const stockMovements = await firebaseServiceLogging.queryDocuments(
       'stockMovements',
       {},
       { field: 'timestamp', direction: 'desc' },
@@ -289,7 +298,7 @@ const getStockSummary = async () => {
  */
 const getMaterialByCode = async (code) => {
   try {
-    const materials = await queryDocuments(
+    const materials = await firebaseServiceLogging.queryDocuments(
       'materials',
       { code },
       {},

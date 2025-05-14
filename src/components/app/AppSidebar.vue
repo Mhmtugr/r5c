@@ -2,7 +2,7 @@
   <aside class="app-sidebar" :class="{ 'collapsed': isCollapsed }">
     <div class="sidebar-header">
       <div class="logo">
-        <img src="@/assets/images/sample-image.jpg" alt="Logo" />
+        <!-- <img src="@/assets/images/sample-image.jpg" alt="Logo" /> -->
         <span v-if="!isCollapsed">METS</span>
       </div>
       <button class="btn btn-icon toggle-btn" @click="toggleSidebar">

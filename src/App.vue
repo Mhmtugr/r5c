@@ -1,115 +1,93 @@
 <template>
-  <component :is="layoutComponent">
-    <router-view />
-  </component>
+  <div id="app-container">
+    <!-- <Notifications /> -->
+    <Suspense>
+      <template #default>
+        <div>
+          <div v-if="authIsLoading" class="loading-container">
+            <p>Auth Yükleniyor...</p>
+          </div>
+          <div v-else>
+            <component :is="layoutComponent">
+              <router-view />
+            </component>
+          </div>
+        </div>
+      </template>
+      <template #fallback>
+        <div class="loading-container">
+          <p>Uygulama Yükleniyor...</p>
+        </div>
+      </template>
+    </Suspense>
+  </div>
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { useAuthStore } from '@/store/auth'
+import { ref, onMounted, computed } from 'vue';
+import { useAuthStore } from '@/store/auth';
+import { useRouter } from 'vue-router';
+// import Notifications from '@/components/ui/Notifications.vue'; // Hala yorumlu
 
-// Layout bileşenleri - lazy loaded
-const DefaultLayout = () => import('./layouts/DefaultLayout.vue')
-const BlankLayout = () => import('./layouts/BlankLayout.vue')
+// Layoutları senkron import et
+import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import BlankLayout from '@/layouts/BlankLayout.vue';
 
-const route = useRoute()
-const authStore = useAuthStore()
+const authStore = useAuthStore();
+const router = useRouter();
+const authIsLoading = ref(true);
 
-// Layout seçimi
+console.log('App.vue script setup: onMounted non-async olarak değiştirildi.');
+
+onMounted(() => { // async kaldırıldı
+  console.log('App.vue onMounted: Başladı (non-async)');
+  authStore.initialize()
+    .then(() => {
+      console.log('App.vue onMounted: authStore.initialize() tamamlandı.');
+    })
+    .catch(error => {
+      console.error('App.vue onMounted: Auth store başlatılırken hata:', error);
+    })
+    .finally(() => {
+      authIsLoading.value = false;
+      console.log(`App.vue onMounted: Tamamlandı. authIsLoading: ${authIsLoading.value}`);
+      // Yönlendirme mantığı
+      const currentRoute = router.currentRoute.value;
+      if (authStore.isAuthenticated && currentRoute && currentRoute.name === 'Login') {
+        console.log('App.vue: Kullanıcı giriş yapmış ve Login sayfasında. Dashboard\'a yönlendiriliyor.');
+        router.push({ name: 'Dashboard' });
+      } else if (!authStore.isAuthenticated && currentRoute && currentRoute.meta && currentRoute.meta.requiresAuth) {
+        console.log('App.vue: Kimlik doğrulaması gerektiren sayfa, kullanıcı giriş yapmamış. Login sayfasına yönlendiriliyor.');
+        router.push({ name: 'Login' });
+      }
+    });
+});
+
 const layoutComponent = computed(() => {
-  const layout = route.meta.layout || 'default'
-  return layout === 'blank' ? BlankLayout : DefaultLayout
-})
-
-// onMounted içinde oturum kontrolü
-onMounted(async () => {
-  if (!authStore.sessionInitialized) {
-    await authStore.initialize();
-    console.log('App.vue: Auth store initialized, session status:', authStore.isAuthenticated);
+  const route = router.currentRoute.value;
+  if (!route || !route.meta) {
+    console.warn('App.vue layoutComponent: currentRoute veya meta tanımsız, DefaultLayout\'a dönülüyor.');
+    return DefaultLayout;
   }
+  const layoutName = route.meta.layout;
+  // console.log(`App.vue layoutComponent: İstenen layout: ${layoutName}`); // İstenirse açılabilir
+  if (layoutName === 'blank') {
+    return BlankLayout;
+  }
+  return DefaultLayout;
 });
 </script>
 
-<style lang="scss">
-@use "./styles/main.scss";
-
-/* Ana stiller */
-html, body {
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 16px;
-  color: var(--text-primary, #333);
-  scroll-behavior: smooth;
+<style scoped>
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.5rem;
 }
-
-body {
-  background-color: var(--bg-content);
-}
-
-// Global yardımcı stiller
-.text-truncate {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.bg-image-cover {
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-// Material status özellikleri
-.material-required {
-  background-color: var(--material-required-bg);
-}
-
-.material-available {
-  background-color: var(--material-available-bg);
-}
-
-.material-critical {
-  background-color: var(--material-critical-bg);
-}
-
-// Özel scrollbar stili
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-// Dark mode scrollbar
-.dark-mode {
-  ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-  }
+#app-container {
+  height: 100%;
+  width: 100%;
 }
 </style>

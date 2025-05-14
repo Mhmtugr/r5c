@@ -14,7 +14,7 @@ const OrderCreationView = () => import('@/modules/orders/views/OrderCreationView
 const ProductionOverview = () => import('@/modules/production/views/ProductionOverview.vue');
 const PlanningDashboard = () => import('@/modules/planning/views/PlanningDashboard.vue');
 const TechnicalView = () => import('@/modules/technical/views/TechnicalView.vue'); // Corrected path and component
-const SettingsGeneral = () => import('@/modules/settings/views/SettingsGeneral.vue');
+const SettingsView = () => import('@/modules/settings/views/SettingsView.vue'); // Dosya adı SettingsGeneral.vue -> SettingsView.vue olarak düzeltildi.
 const NotFound = () => import('@/components/NotFound.vue');
 const InventoryList = () => import('@/modules/inventory/views/InventoryList.vue');
 const MaterialsView = () => import('@/modules/inventory/views/MaterialsView.vue');
@@ -99,7 +99,7 @@ const routes = [
   {
     path: '/settings',
     name: 'Settings',
-    component: SettingsGeneral,
+    component: SettingsView, // Komponent adı SettingsGeneral -> SettingsView olarak düzeltildi.
     meta: { requiresAuth: true },
   },
   {

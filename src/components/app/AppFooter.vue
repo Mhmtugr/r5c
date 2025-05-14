@@ -4,7 +4,7 @@
       <div class="row align-items-center">
         <div class="col-md-4">
           <div class="footer-branding">
-            <img src="@/assets/images/sample-image.jpg" alt="METS Logo" class="footer-logo" />
+            <!-- <img src="@/assets/images/sample-image.jpg" alt="METS Logo" class="footer-logo" /> -->
             <div class="footer-brand-text">
               <h5>METS</h5>
               <span>MehmetEndüstriyelTakip Sistemi</span>

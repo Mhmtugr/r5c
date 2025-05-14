@@ -111,6 +111,7 @@ onMounted(() => {
   document.body.classList.toggle('dark-mode', isDarkMode.value);
   
   // Auth durumunu kontrol et, değilse ve development modunda ise otomatik login
+  /*
   if (!isAuthenticated.value) {
     console.log('Otomatik giriş kontrolü yapılıyor...');
     
@@ -122,6 +123,7 @@ onMounted(() => {
       });
     }
   }
+  */
 });
 
 // Route değişiklikleri izleme - mobil görünümde sidebar otomatik kapansın

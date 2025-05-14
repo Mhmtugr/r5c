@@ -5,15 +5,6 @@ import "firebase/compat/firestore";
 import "firebase/compat/storage";
 import "firebase/compat/analytics";
 
-// MehmetEndustriyelTakip uygulaması için Firebase yapılandırması
-const firebaseConfig = {
-  apiKey: "AIzaSyCUjPf-XtmbcmFmy3m-HWjJoilDNQbt3GE",
-  authDomain: "mehmetendustriyeltakip-1d917.firebaseapp.com",
-  projectId: "mehmetendustriyeltakip-1d917",
-  storageBucket: "mehmetendustriyeltakip-1d917.firebasestorage.app",
-  messagingSenderId: "278521463542",
-  appId: "1:278521463542:web:ee3f34dd1c8830f664e2d7"
-};
 // Firebase servisi
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
@@ -48,7 +39,7 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "mets-project.appspot.com",
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789012",
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:123456789012:web:abcdef1234567890abcdef",
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-ABCDEFGHIJ"
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || undefined // "G-ABCDEFGHIJ" yerine undefined
 };
 // Firebase compat başlatma
 const app = firebase.initializeApp(firebaseConfig);
@@ -85,18 +76,24 @@ export function useAuthService() {
    * @returns {Promise} - Giriş işlemi sonucu
    */
   const login = async (credentials) => {
+    console.log(`[useAuthService] login: called with credentials:`, JSON.stringify(credentials)); // Added log
+
     try {
       authState.value.isProcessing = true;
       authState.value.lastError = null;
       
       const { email, password } = credentials;
+      console.log(`[useAuthService] login: email='${email}', password='${password}'`); // Added log
       
       if (!email || !password) {
+        console.log('[useAuthService] login: Email or password missing'); // Added log
         return { success: false, error: 'E-posta ve şifre giriniz' };
       }
       
       // Standart admin kullanıcısı için sabit giriş
+      console.log(`[useAuthService] login: Checking for admin/admin. Email type: ${typeof email}, Password type: ${typeof password}, email value: "${email}", password value: "${password}"`); // Added log
       if (email === 'admin' && password === 'admin') {
+        console.log('[useAuthService] login: Admin/admin credentials matched.'); // Added log
         const adminUser = {
           uid: 'admin',
           email: 'admin',
@@ -107,6 +104,7 @@ export function useAuthService() {
         return { success: true, user: adminUser };
       }
       
+      console.log('[useAuthService] login: Admin/admin credentials NOT matched. Proceeding to Firebase/demo login.'); // Added log
       // Firebase ile giriş yap
       if (typeof firebase !== 'undefined' && firebase.auth) {
         try {

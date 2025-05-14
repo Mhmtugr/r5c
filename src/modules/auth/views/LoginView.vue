@@ -6,7 +6,7 @@
         <!-- Kart Başlığı -->
         <div class="card-header bg-transparent text-center py-4 border-0">
           <div class="logo-container mb-3">
-            <img src="@/assets/images/sample-image.jpg" alt="METS Logo" class="logo-img" />
+            <!-- <img src="@/assets/images/sample-image.jpg" alt="METS Logo" class="logo-img" /> -->
           </div>
           <h3 class="brand-title">METS</h3>
           <p class="text-muted">Mehmet Endüstriyel Takip Sistemi</p>
@@ -19,17 +19,17 @@
             <h4 class="card-title text-center mb-4">Giriş Yap</h4>
             <form @submit.prevent="login">
               <div class="mb-4">
-                <label for="email" class="form-label">E-posta</label>
+                <label for="email" class="form-label">Kullanıcı Adı / E-posta</label>
                 <div class="input-group input-group-lg">
                   <span class="input-group-text bg-transparent border-end-0">
-                    <i class="bi bi-envelope"></i>
+                    <i class="bi bi-person-fill"></i>
                   </span>
                   <input
-                    type="email"
+                    type="text"
                     class="form-control border-start-0"
                     id="email"
                     v-model="loginForm.email"
-                    placeholder="E-posta adresiniz"
+                    placeholder="Kullanıcı adı veya e-posta"
                     required
                   />
                 </div>

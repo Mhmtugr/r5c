@@ -18,7 +18,7 @@ import {
   doc,
   updateDoc,
   db
-} from './firebase-service';
+} from './firebase-service.js'; // Added .js extension
 
 // stringUtils'dan sipariş ID oluşturucuyu import et
 import { generateOrderId } from '@/utils/stringUtils';

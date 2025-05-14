@@ -43,23 +43,22 @@ class CADAnalysisService {
    */
   async initializeModels() {
     try {
-      // Modellerin kullanıma hazır olup olmadığını kontrol et (API üzerinden)
-      const modelStatus = await aiService.getAIModelsStatus(['objectDetection', 'cadAnalysis']);
-      
-      if (modelStatus.objectDetection?.available) {
-        this.modelStatus.value.objectDetectionLoaded = true;
-        logger.info('Nesne tanıma modeli hazır');
-      }
-      
-      if (modelStatus.cadAnalysis?.available) {
-        this.modelStatus.value.drawingAnalysisLoaded = true;
-        logger.info('Çizim analiz modeli hazır');
-      }
-      
-      // Diğer modeller için durum kontrolü de yapılabilir
+      // Bu servis şu anda simüle edilmiş modeller kullandığından,
+      // şimdilik "yüklendi" olarak varsayacağız.
+      // Gerçek bir senaryoda, bu, gerçek model yükleme veya durum kontrollerini içerir.
+      this.modelStatus.value.objectDetectionLoaded = true;
+      logger.info('Nesne tanıma modeli (simüle edilmiş) hazır');
+
+      this.modelStatus.value.drawingAnalysisLoaded = true;
+      logger.info('Çizim analiz modeli (simüle edilmiş) hazır');
+
+      // Gelecekte: textExtraction ve errorDetection modelleri eklenirse,
+      // durumları burada da ayarlanabilir.
+      // this.modelStatus.value.textExtractionLoaded = true;
+      // this.modelStatus.value.errorDetectionLoaded = true;
       
     } catch (error) {
-      logger.error('Yapay zeka modellerini yükleme hatası:', error);
+      logger.error('Yapay zeka modellerini (simüle edilmiş) başlatma hatası:', error);
     }
   }
   
