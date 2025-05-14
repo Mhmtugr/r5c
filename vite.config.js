@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
 // Mutlak dosya yolunu belirle
@@ -9,68 +8,9 @@ const resolveAbsolutePath = (p) => path.resolve(__dirname, p);
 export default defineConfig({
   plugins: [
     vue(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'assets/**/*'],
-      // PWA manifestini etkinleştir ve public klasöründeki dosyayı kullan
-      manifest: {
-        name: "MehmetEndustriyelTakip",
-        short_name: "ElektroTrack",
-        description: "Orta Gerilim Hücre İmalat Takip Sistemi",
-        theme_color: "#1e40af",
-        background_color: "#f8fafc",
-        display: "standalone",
-        scope: "/",
-        start_url: "/",
-        icons: [
-          { src: 'assets/icons/icon-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
-          { src: 'assets/icons/icon-384x384.png', sizes: '384x384', type: 'image/png' },
-          { src: 'assets/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' }
-        ],
-        shortcuts: [
-          { name: "Kontrol Paneli", short_name: "Dashboard", description: "Kontrol paneline git", url: "/dashboard", icons: [{ src: "assets/icons/shortcuts/dashboard.png", sizes: "96x96" }] },
-          { name: "Siparişler", short_name: "Siparişler", description: "Siparişlere git", url: "/orders", icons: [{ src: "assets/icons/shortcuts/orders.png", sizes: "96x96" }] },
-          { name: "Üretim", short_name: "Üretim", description: "Üretim sayfasına git", url: "/production", icons: [{ src: "assets/icons/shortcuts/production.png", sizes: "96x96" }] }
-        ],
-        categories: ["business", "productivity", "utilities"],
-        lang: "tr-TR",
-        dir: "ltr"
-      },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
-        globIgnores: ['**/node_modules/**/*', '**/unused/**/*', '**/dist/**'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'cdn-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 günlük cache
-              }
-            }
-          }
-        ],
-        // Service worker yapılandırması
-        swDest: 'dist/sw.js',
-        navigateFallback: '/offline.html',
-        additionalManifestEntries: [
-          { url: 'offline.html', revision: null }
-        ],
-        skipWaiting: true,
-        clientsClaim: true
-      },
-      injectManifest: false,
-      selfDestroying: false,
-      strategies: 'generateSW',
-      buildBase: '/',
-      devOptions: {
-        enabled: true,
-        type: 'module',
-        navigateFallback: 'index.html'
-      }
-    })
+    // PWA eklentisi, 'npm run dev' komutundaki 'Unexpected "*"' sözdizimi hatasını çözmek için geçici olarak kaldırıldı.
+    // Orijinal VitePWA yapılandırması buradaydı.
+    // İlerleyen adımlarda PWA tekrar etkinleştirilecektir.
   ],
   base: './', // Base URL'i kök dizin olarak ayarla
   publicDir: 'public',
@@ -89,7 +29,8 @@ export default defineConfig({
           'vendor-chart': ['chart.js'],
           'vendor-bootstrap': ['bootstrap'],
           'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage']
-        },        entryFileNames: 'assets/[name].[hash].js',
+        },
+        entryFileNames: 'assets/[name].[hash].js',
         chunkFileNames: 'assets/[name].[hash].js',
         assetFileNames: 'assets/[name].[hash].[ext]'
       },
@@ -97,7 +38,8 @@ export default defineConfig({
     },
     target: ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari14'],
     // Build hatalarını daha net görüntülemek için
-    reportCompressedSize: true  },
+    reportCompressedSize: true
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -118,13 +60,14 @@ export default defineConfig({
     dedupe: ['vue'],
     // Import sorunlarını önlemek için uzantı çözümlemesi
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
-  },  optimizeDeps: {
+  },
+  optimizeDeps: {
     include: [
-      'vue', 
-      'vue-router', 
-      'pinia', 
-      'axios', 
-      'mitt', 
+      'vue',
+      'vue-router',
+      'pinia',
+      'axios',
+      'mitt',
       'chart.js',
       'firebase/app',
       'firebase/auth',
@@ -143,15 +86,17 @@ export default defineConfig({
     hmr: {
       overlay: true
     }
-  },  css: {
+  },
+  css: {
     devSourcemap: true,
     preprocessorOptions: {
       scss: {
         // Modern SASS API kullanımı için
-        additionalData: '@use "@/styles/base/_variables.scss" as *;',
+        // additionalData: '@use "@/styles/base/_variables.scss" as *;', // GEÇİCİ OLARAK DEVRE DIŞI
       }
     },
     // Sass compiler options directly at the CSS level
+    /* // GEÇİCİ OLARAK DEVRE DIŞI BAŞLANGIÇ
     sassOptions: {
       outputStyle: 'compressed',
       charset: false,
@@ -171,6 +116,7 @@ export default defineConfig({
         resolveAbsolutePath('node_modules')
       ]
     }
+    */ // GEÇİCİ OLARAK DEVRE DIŞI BİTİŞ
   },
   esbuild: {
     drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
